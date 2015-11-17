@@ -1,0 +1,17 @@
+{
+    "contents" : "##unzipping the dataset files and reading all the data tables as well as the features and activity labels\nlibrary(dplyr)\nunzip('UCI HAR Dataset.zip')\nsubject_train <- read.table('UCI HAR Dataset/train/subject_train.txt')\nfeat <- read.table('UCI HAR Dataset/features.txt')\nactivities<- read.table('UCI HAR Dataset/activity_labels.txt')\nx_train <- read.table('UCI HAR Dataset/train/X_train.txt')\ny_train <- read.table('UCI HAR Dataset/train/y_train.txt')\nsubject_test <- read.table('UCI HAR Dataset/test/subject_test.txt')\nx_test <- read.table('UCI HAR Dataset/test/X_test.txt')\ny_test <- read.table('UCI HAR Dataset/test/y_test.txt')\n##assigning the column names for subject and activity\ncolnames(subject_test) <- c('subject')\ncolnames(y_test) <- c('activity')\ncolnames(subject_train) <- c('subject')\ncolnames(y_train) <- c('activity')\n##merging the train and test files\ntrain_bind <- cbind(subject_train, x_train, y_train)\ntest_bind <- cbind(subject_test,y_test,x_test)\ndata_merged <- rbind(test_bind, train_bind)\n##assigning which activities correspond to which subject\ndata_merged$activity[which(data_merged$activity==1)] <- 'Walking'\ndata_merged$activity[which(data_merged$activity==2)] <- 'Walking Upstairs'\ndata_merged$activity[which(data_merged$activity==3)] <- 'Walking Downstairs'\ndata_merged$activity[which(data_merged$activity==4)] <- 'Sitting'\ndata_merged$activity[which(data_merged$activity==5)] <- 'Standing'\ndata_merged$activity[which(data_merged$activity==6)] <- 'Laying'\n##taking the mean and standard deviation for each measurement and placing it in a summary data table\ngroup_by_subject<- group_by(data_merged,subject,activity)\naverage_per_subject<- summarise_each(group_by_subject,funs(mean))\n##assigning the correct column names from the features list\ncolnames(data_merged)[3:563]<- as.character(feat[1:561,2])\ncolnames(average_per_subject)[3:563]<- as.character(feat[1:561,2])\n##writing the combined data set to a tidy table\nwrite.table(average_per_subject,row.names=FALSE,'tidydata.txt')\n",
+    "created" : 1444925056921.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3581200952",
+    "id" : "50A1720E",
+    "lastKnownWriteTime" : 1447774937,
+    "path" : "C:/Users/jaloftis/Google Drive/R Programming/Getting and cleaning data/Run_Analysis.R",
+    "project_path" : "Run_Analysis.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
